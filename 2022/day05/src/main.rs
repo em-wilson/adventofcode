@@ -26,21 +26,24 @@ struct Tower {
 
 impl Tower {
     fn move_crate(&mut self, qty:usize, from_stack:usize, to_stack:usize) {
-        let mut scoop:Vec<char> = Vec::new();
+        match self.model {
+            TowerModel::Tower9000 => self.move_crate_9000(qty, from_stack, to_stack),
+            TowerModel::Tower9001 => self.move_crate_9001(qty, from_stack, to_stack)
+        }
+    }
+
+    fn move_crate_9000(&mut self, qty:usize, from_stack:usize, to_stack:usize) {
         for _ in 0..qty {
             if let Some(tower_crate) = self.stacks[from_stack-1].pop() {
-                match self.model {
-                    TowerModel::Tower9000 => self.stacks[to_stack-1].push(tower_crate),
-                    TowerModel::Tower9001 => scoop.push(tower_crate),
-                }
+                self.stacks[to_stack-1].push(tower_crate);
             }
         }
+    }
 
-        if self.model == TowerModel::Tower9001 {   
-            while let Some(tower_crate) = scoop.pop() {
-                self.stacks[to_stack-1].push(tower_crate);
-            }         
-        }
+    fn move_crate_9001(&mut self, qty:usize, from_stack:usize, to_stack:usize) {
+        let from = &mut self.stacks[from_stack-1];
+        let scoop = from.drain(from.len()-qty..).collect::<Vec<_>>();
+        self.stacks[to_stack-1].append(&mut scoop.clone());
     }
 
     fn top_crates(&self) -> String {
