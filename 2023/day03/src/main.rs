@@ -10,8 +10,8 @@ fn main() {
     let input = fs::read_to_string("input.txt")
         .expect("Could not read file input");
 
-        println!("Sum for part A: {}", calculate_value_of_number_with_adjacent_symbols(input.to_string()));
-        println!("Sum for part B: {}", calculate_value_of_gears(input.to_string()));
+    println!("Sum for part A: {}", calculate_value_of_number_with_adjacent_symbols(input.to_string()));
+    println!("Sum for part B: {}", calculate_value_of_gears(input.to_string()));
 }
 
 #[derive(Clone,Copy)]
