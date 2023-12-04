@@ -60,44 +60,46 @@ fn extract_number_vec(input:String) -> Vec<u32> {
 struct Card {
     number: u32,
     winning_numbers: Vec<u32>,
-    card_numbers: Vec<u32>,
 }
 
 impl Card {
     pub fn parse(input: String) -> Card {
         let envelope:Vec<_> = input.split(":").collect();
         let number_parts:Vec<_> = envelope[1].split("|").collect();
-        let winning_numbers = number_parts[0].to_string();
-        let card_numbers = number_parts[1].to_string();
+        let drawn_numbers = extract_number_vec(number_parts[0].to_string());
+        let card_numbers = extract_number_vec(number_parts[1].to_string());
         return Card {
             number: *extract_number_vec(envelope[0].to_string()).first().unwrap(),
-            winning_numbers: extract_number_vec(winning_numbers.to_string()),
-            card_numbers: extract_number_vec(card_numbers.to_string()),
+            winning_numbers: get_vector_intersection(drawn_numbers.clone(), card_numbers.clone()),
         }
     }
 
     pub fn value(&self) -> u32 {
-        let left:HashSet<_> = self.winning_numbers.iter().collect::<HashSet<_>>();
-        let right:HashSet<_> = self.card_numbers.iter().collect::<HashSet<_>>();
-        let winners = left.intersection(&right).collect::<Vec<_>>();
-        if winners.len() > 0 {
-            return 2_u32.pow(winners.len() as u32 - 1);
+        if self.winning_numbers.len() > 0 {
+            return 2_u32.pow(self.winning_numbers.len() as u32 - 1);
         }
         return 0;
     }
 
     pub fn get_resulting_card_numbers(&self) -> Vec<u32> {
         let mut results = Vec::new();
-        let left:HashSet<_> = self.winning_numbers.iter().collect::<HashSet<_>>();
-        let right:HashSet<_> = self.card_numbers.iter().collect::<HashSet<_>>();
-        let winners = left.intersection(&right).collect::<Vec<_>>();
-        if winners.len() > 0 {
-            for i in self.number+1..self.number+winners.len() as u32+1 as u32 {
+        if self.winning_numbers.len() > 0 {
+            for i in self.number+1..self.number+self.winning_numbers.len() as u32+1 as u32 {
                 results.push(i);
             }
         }
         return results;
     }
+}
+
+fn get_vector_intersection(input_left:Vec<u32>, input_right:Vec<u32>) -> Vec<u32> {
+    let left:HashSet<_> = input_left.iter().collect::<HashSet<_>>();
+    let right:HashSet<_> = input_right.iter().collect::<HashSet<_>>();
+    return left.intersection(&right)
+        .collect::<Vec<_>>()
+        .iter()
+        .map(|a| ***a)
+        .collect::<Vec<_>>();
 }
 
 #[cfg(test)]
@@ -122,8 +124,7 @@ mod test {
     fn test_card_parse() {
         let card = Card::parse("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53".to_string());
         assert_eq!(1, card.number);
-        assert_eq!(5, card.winning_numbers.len());
-        assert_eq!(8, card.card_numbers.len());
+        assert_eq!(4, card.winning_numbers.len());
     }
 
     #[test]
