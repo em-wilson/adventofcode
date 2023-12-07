@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "advent",
+    "day01"
+]
+
+resolver = "1"
