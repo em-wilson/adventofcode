@@ -16,6 +16,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "advent_shared"
+version = "0.1.0"
+
+[[package]]
 name = "aho-corasick"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -27,33 +31,52 @@ dependencies = [
 [[package]]
 name = "day01"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "day02"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "day03"
 version = "0.1.0"
 dependencies = [
+ "advent_shared",
  "regex",
 ]
 
 [[package]]
 name = "day04"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "day05"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "day06"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "day07"
 version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
 
 [[package]]
 name = "memchr"

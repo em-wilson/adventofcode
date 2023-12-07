@@ -2,6 +2,7 @@
 
 members = [
     "advent",
+    "advent_shared",
     "day01",
     "day02",
     "day03",

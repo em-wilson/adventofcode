@@ -1,11 +1,21 @@
 pub mod game;
 
-pub fn run_a(input:&str) {
-    let game = game::new_game(input.to_string());
-    println!("Results for part A: {}", game.play(game::Mode::ImpossibleCombinations));
+use advent_shared::AdventChallenge;
+
+pub fn create_challenge() -> AdventChallenge {
+    AdventChallenge{
+        title: "--- Day 2: Cube Conundrum ---".to_string(),
+        part_a: Box::new(|input| run_a(input)),
+        part_b: Box::new(|input| run_b(input)),
+    }
 }
 
-pub fn run_b(input:&str) {
+fn run_a(input:&str) -> String {
     let game = game::new_game(input.to_string());
-    println!("Results for part B: {}", game.play(game::Mode::PowerCubes));
+    game.play(game::Mode::ImpossibleCombinations).to_string()
+}
+
+fn run_b(input:&str) -> String {
+    let game = game::new_game(input.to_string());
+    game.play(game::Mode::PowerCubes).to_string()
 }

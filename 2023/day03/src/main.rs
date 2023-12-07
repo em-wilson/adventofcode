@@ -3,10 +3,12 @@ use std::fs;
 mod position;
 mod solution;
 
+use day03::{run_a, run_b};
+
 fn main() {
     let input = fs::read_to_string("input.txt")
         .expect("Could not read file input");
 
-    println!("Sum for part A: {}", solution::calculate_value_of_number_with_adjacent_symbols(input.to_string()));
-    println!("Sum for part B: {}", solution::calculate_value_of_gears(input.to_string()));
+    println!("Results for part A: {}", run_a(&input));
+    println!("Results for part B: {}", run_b(&input));
 }

@@ -1,11 +1,21 @@
 mod solution;
 
-pub fn run_a(input:&str) {
-    let cards = solution::parse_card_input(input.to_string());
-    println!("Results for part A: {}", solution::sum_card_values(&cards));
+use advent_shared::AdventChallenge;
+
+pub fn create_challenge() -> AdventChallenge {
+    AdventChallenge{
+        title: "--- Day 4: Scratchcards ---".to_string(),
+        part_a: Box::new(|input| run_a(input)),
+        part_b: Box::new(|input| run_b(input)),
+    }
 }
 
-pub fn run_b(input:&str) {
+pub fn run_a(input:&str) -> String {
     let cards = solution::parse_card_input(input.to_string());
-    println!("Results for part B: {}", solution::explode_and_count_cards(&cards));
+    solution::sum_card_values(&cards).to_string()
+}
+
+pub fn run_b(input:&str) -> String {
+    let cards = solution::parse_card_input(input.to_string());
+    solution::explode_and_count_cards(&cards).to_string()
 }

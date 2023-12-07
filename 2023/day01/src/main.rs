@@ -7,6 +7,6 @@ fn main() {
         .expect("Could not read file input");
 
     println!("--- Day 1: Trebuchet?! ---");
-    run_a(&input);
-    run_b(&input);
+    println!("Results for part A: {}", run_a(&input));
+    println!("Results for part B: {}", run_b(&input));
 }

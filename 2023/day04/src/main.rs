@@ -6,6 +6,6 @@ fn main() {
         .expect("Could not read file input");
 
     let cards = solution::parse_card_input(input.to_string());
-    println!("Results for part A: {}", solution::sum_card_values(&cards));
-    println!("Results for part B: {}", solution::explode_and_count_cards(&cards));
+    println!("Results for part A: {}", day04::run_a(&input));
+    println!("Results for part B: {}", day04::run_b(&input));
 }

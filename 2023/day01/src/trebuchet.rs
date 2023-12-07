@@ -1,7 +1,7 @@
 use crate::bookend_tokenizer::tokenize;
 use crate::number_dictionary::{generate_dictionary, NumberDictionary};
 
-pub fn calibrate_input(input:String, convert_strings: bool) -> u32 {
+pub fn calibrate_input(input:&str, convert_strings: bool) -> u32 {
     let dictionary = generate_dictionary(convert_strings);
     let lines = input.split("\n");
 
