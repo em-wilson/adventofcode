@@ -1,4 +1,8 @@
+use colored::Colorize;
+
 fn main() {
+    let start = std::time::Instant::now();
+
     day01::create_challenge().run("day01/input.txt");
     day02::create_challenge().run("day02/input.txt");
     day03::create_challenge().run("day03/input.txt");
@@ -6,4 +10,9 @@ fn main() {
     day05::create_challenge().run("day05/input.txt");
     day06::create_challenge().run("");
     day07::create_challenge().run("day07/input.txt");
+
+    println!("{} {}",
+        "Total time:".bright_white(),
+        format!("{:?}", start.elapsed()).cyan()
+    );
 }
