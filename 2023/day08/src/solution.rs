@@ -90,9 +90,35 @@ pub fn count_simultaneous_steps(map_input:&str) -> i64 {
 
     let mut result:i64 = 1;
     for step in step_counts {
-        result = num::integer::lcm(result, *step);
+        result = lcm(result, *step) as i64;
     }
     return result;
+}
+
+fn gcd(first: i64, second: i64) -> i64
+{
+    let mut max = first;
+    let mut min = second;
+    if min > max {
+        let val = max;
+        max = min;
+        min = val;
+    }
+
+    loop {
+        let res = max % min;
+        if res == 0 {
+            return min;
+        }
+
+        max = min;
+        min = res;
+    }
+}
+
+fn lcm(first: i64, second: i64) -> i64
+{
+    first * second / gcd(first, second)
 }
 
 #[cfg(test)]
@@ -105,6 +131,13 @@ mod tests {
             .expect("Could not read file input");
 
         return input.to_string();
+    }
+
+    #[test]
+    fn test_lcm() {
+        assert_eq!(6, lcm(2,3));
+        assert_eq!(60, lcm(15,20));
+        assert_eq!(36, lcm(12,36));
     }
     
     #[test]

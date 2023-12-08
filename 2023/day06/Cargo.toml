@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-advent_shared = { path = "../advent_shared" }
+advent_shared = { path = "../../advent_shared" }
 roots = "0.0.8"
