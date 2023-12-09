@@ -1,4 +1,3 @@
-use regex::Regex;
 use std::collections::HashSet;
 
 #[derive(Clone,Copy)]
@@ -8,7 +7,7 @@ pub enum OverlapType {
 }
 
 impl OverlapType {
-    fn check_ranges_overlap(self, a1:u32, a2:u32, b1:u32, b2:u32) -> bool {
+    fn check_ranges_overlap(self, a1:usize, a2:usize, b1:usize, b2:usize) -> bool {
         return match self {
             OverlapType::Completely => check_ranges_overlap_completely(a1,a2,b1,b2),
             OverlapType::Partial => check_ranges_overlap_partially(a1,a2,b1,b2),
@@ -18,20 +17,20 @@ impl OverlapType {
 
 pub fn count_overlaps(input:&str, overlap_type:OverlapType) -> usize {
     return input.split("\n")
-        .filter(|line| check_line_contains_overlap(line.to_string(), overlap_type))
+        .filter(|line| check_line_contains_overlap(line, overlap_type))
         .collect::<Vec<_>>()
         .len();
 }
 
-fn check_line_contains_overlap(input:String, overlap_type:OverlapType) -> bool {
-    let re = Regex::new(r"(\d+)").unwrap();
-    let nums :Vec<_> = re.find_iter(input.as_str())
-        .map(|cap| cap.as_str().parse::<u32>().unwrap())
+fn check_line_contains_overlap(input:&str, overlap_type:OverlapType) -> bool {
+    let nums:Vec<_> = input.split(",")
+        .flat_map(|s|s.split("-"))
+        .map(|s|s.parse::<usize>().unwrap())
         .collect();
     return overlap_type.check_ranges_overlap(nums[0], nums[1], nums[2], nums[3]);
 }
 
-fn check_ranges_overlap_completely(a1:u32, a2:u32, b1:u32, b2:u32) -> bool {
+fn check_ranges_overlap_completely(a1:usize, a2:usize, b1:usize, b2:usize) -> bool {
     if a1 <= b1 && a2 >= b2 {
         return true;
     }
@@ -43,7 +42,7 @@ fn check_ranges_overlap_completely(a1:u32, a2:u32, b1:u32, b2:u32) -> bool {
     return false;
 }
 
-fn check_ranges_overlap_partially(a1:u32, a2:u32, b1:u32, b2:u32) -> bool {
+fn check_ranges_overlap_partially(a1:usize, a2:usize, b1:usize, b2:usize) -> bool {
     let left:HashSet<_> = (a1..=a2).collect();
     let right:HashSet<_> = (b1..=b2).collect();
 
