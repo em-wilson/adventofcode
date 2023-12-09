@@ -12,9 +12,9 @@ pub fn create_challenge() -> AdventChallenge {
 }
 
 pub fn run_a(input:&str) -> String {
-    solution::calculate_value_of_number_with_adjacent_symbols(input.to_string()).to_string()
+    solution::calculate_value_of_number_with_adjacent_symbols(input).to_string()
 }
 
 pub fn run_b(input:&str) -> String {
-    solution::calculate_value_of_gears(input.to_string()).to_string()
+    solution::calculate_value_of_gears(input).to_string()
 }

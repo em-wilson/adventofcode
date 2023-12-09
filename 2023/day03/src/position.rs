@@ -1,11 +1,11 @@
 #[derive(Clone,Copy,Debug,PartialEq)]
 pub struct Pos {
-    pub x: i32, 
-    pub y: i32,
+    pub x: isize, 
+    pub y: isize,
 }
 
 impl Pos {
-    pub fn from(x:i32, y:i32) -> Pos {
+    pub fn from(x:isize, y:isize) -> Pos {
         return Pos{x:x,y:y};
     }
 

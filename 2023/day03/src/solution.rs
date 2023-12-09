@@ -1,5 +1,3 @@
-extern crate regex;
-use regex::{Regex, Match};
 use crate::position::Pos;
 
 
@@ -10,15 +8,15 @@ struct PositionalSymbol {
 }
 
 struct PositionalNumber {
-    num: i32,
+    num: isize,
     positions: Vec<Pos>,
 }
 
 impl PositionalNumber {
-    fn from_capture(input:Match, y:i32) -> PositionalNumber {
-        return PositionalNumber {
-            num: input.as_str().parse::<i32>().unwrap(),
-            positions: positions_from_range(input.start() as i32, input.len() as i32, y),
+    fn from_string(input:&str, x:isize, y:isize) -> PositionalNumber {
+        PositionalNumber {
+            num: input.parse::<isize>().unwrap(),
+            positions: positions_from_range(x, input.len() as isize, y),
         }
     }
 
@@ -35,35 +33,48 @@ impl PositionalNumber {
     }
 }
 
-fn positions_from_range(start:i32, length:i32, y: i32) -> Vec<Pos> {
+fn positions_from_range(start:isize, length:isize, y: isize) -> Vec<Pos> {
     return (start..start+length)
-        .map(|x| Pos::from(x as i32,y))
+        .map(|x| Pos::from(x.try_into().unwrap(), y as isize))
         .collect::<Vec<Pos>>()
 }
 
-fn extract_number_pos(input:String, y: i32) -> Vec<PositionalNumber> {
-    let re = Regex::new(r"(\d+)").unwrap();
-    return re.find_iter(input.as_str())
-        .map(|cap| PositionalNumber::from_capture(cap, y))
-        .collect();
+fn extract_number_pos(input:&str, y: isize) -> Vec<PositionalNumber> {
+    let mut results:Vec<PositionalNumber> = vec!();
+    let mut i = 0;
+    let chars:Vec<char> = input.chars().collect();
+    let len = chars.len();
+    while i < len {
+        if chars[i].is_digit(10) {
+            let x = i;
+            let mut num = String::from("");
+            while i < len && chars[i].is_digit(10) {
+                num += &chars[i].to_string();
+                i += 1;
+            }
+            results.push(PositionalNumber::from_string(&num, x as isize, y));
+        }
+        i += 1;
+    }
+    results
 }
 
-fn extract_symbol_pos(input:String, y: i32) -> Vec<PositionalSymbol> {
+fn extract_symbol_pos(input:&str, y: isize) -> Vec<PositionalSymbol> {
     return input.chars()
         .enumerate()
         .filter(|(_, symbol)| symbol != &'.')
         .filter(|(_, symbol)| !symbol.is_digit(10))
-        .map(|(x, symbol)| PositionalSymbol{symbol: symbol, position: Pos{x:x as i32,y:y}})
+        .map(|(x, symbol)| PositionalSymbol{symbol: symbol, position: Pos{x:x as isize,y:y as isize}})
         .collect();
 }
 
-pub fn calculate_value_of_number_with_adjacent_symbols(input: String) -> i32 {
+pub fn calculate_value_of_number_with_adjacent_symbols(input: &str) -> isize {
     let mut numbers : Vec<PositionalNumber> = Vec::new();
     let mut symbols : Vec<PositionalSymbol> = Vec::new();
 
     for (y, line) in input.split("\n").enumerate() {
-        let mut new_numbers = extract_number_pos(line.to_string(), y as i32);
-        let mut new_symbols = extract_symbol_pos(line.to_string(), y as i32);
+        let mut new_numbers = extract_number_pos(line, y as isize);
+        let mut new_symbols = extract_symbol_pos(line, y as isize);
         numbers.append(&mut new_numbers);
         symbols.append(&mut new_symbols);
     }
@@ -75,13 +86,13 @@ pub fn calculate_value_of_number_with_adjacent_symbols(input: String) -> i32 {
         .sum();
 }
 
-pub fn calculate_value_of_gears(input: String) -> i32 {
+pub fn calculate_value_of_gears(input: &str) -> isize {
     let mut numbers : Vec<PositionalNumber> = Vec::new();
     let mut symbols : Vec<PositionalSymbol> = Vec::new();
 
     for (y, line) in input.split("\n").enumerate() {
-        let mut new_numbers = extract_number_pos(line.to_string(), y as i32);
-        let mut new_symbols = extract_symbol_pos(line.to_string(), y as i32);
+        let mut new_numbers = extract_number_pos(line, y as isize);
+        let mut new_symbols = extract_symbol_pos(line, y as isize);
         numbers.append(&mut new_numbers);
         symbols.append(&mut new_symbols);
     }
@@ -110,7 +121,7 @@ mod test {
 
     #[test]
     fn test_double_number_extraction() {
-        let results = extract_number_pos("467..114..".to_string(), 1);
+        let results = extract_number_pos("467..114..", 1);
         assert_eq!(2, results.len());
         assert_eq!(467, results[0].num);
         assert_eq!(3, results[0].positions.len());
@@ -126,7 +137,7 @@ mod test {
 
     #[test]
     fn test_single_number_extraction() {
-        let results = extract_number_pos("..592.....".to_string(), 6);
+        let results = extract_number_pos("..592.....", 6);
         assert_eq!(1, results.len());
         assert_eq!(592, results[0].num);
         assert_eq!(3, results[0].positions.len());
@@ -137,7 +148,7 @@ mod test {
 
     #[test]
     fn test_symbol_extraction() {
-        let results = extract_symbol_pos("...$.*....".to_string(), 8);
+        let results = extract_symbol_pos("...$.*....", 8);
         assert_eq!(2, results.len());
         assert_eq!('$', results[0].symbol);
         assert_eq!(Pos::from(3,8), results[0].position);
@@ -147,7 +158,7 @@ mod test {
 
     #[test]
     fn test_symbol_extraction_with_numbers() {
-        let results = extract_symbol_pos(".....+.58.".to_string(), 5);
+        let results = extract_symbol_pos(".....+.58.", 5);
         assert_eq!(1, results.len());
         assert_eq!('+', results[0].symbol);
         assert_eq!(Pos::from(5,5), results[0].position);
@@ -173,15 +184,15 @@ mod test {
     #[test]
     fn test_calculate_value_of_number_with_adjacent_symbols() {
         let input = "467..114..\n...*......\n..35..633.";
-        assert_eq!(502, calculate_value_of_number_with_adjacent_symbols(input.to_string()));
+        assert_eq!(502, calculate_value_of_number_with_adjacent_symbols(input));
     }
 
     #[test]
     fn test_calculate_value_of_gears() {
         let input = "467..114..\n...*......\n..35..633.";
-        assert_eq!(16345, calculate_value_of_gears(input.to_string()));
+        assert_eq!(16345, calculate_value_of_gears(input));
 
         let input = "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598..";
-        assert_eq!(467835, calculate_value_of_gears(input.to_string()));
+        assert_eq!(467835, calculate_value_of_gears(input));
     }
 }
