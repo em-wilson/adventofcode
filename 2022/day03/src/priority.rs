@@ -1,7 +1,7 @@
 use crate::letter::letter_value;
 use std::collections::HashSet;
 
-fn get_duplicate_letter(input:String) -> char {
+fn get_duplicate_letter(input:&str) -> char {
     let (left, right) = input.split_at(input.len() / 2);
     let unique_left = left.chars().collect::<HashSet<_>>();
     let unique_right = right.chars().collect::<HashSet<_>>();
@@ -10,10 +10,10 @@ fn get_duplicate_letter(input:String) -> char {
     return **intersection.first().unwrap();
 }
 
-pub fn sum_priority(input:String) -> u32 {
+pub fn sum_priority(input:&str) -> u32 {
     let mut sum = 0;
     for line in input.split("\n") {
-        let letter = get_duplicate_letter(line.to_string());
+        let letter = get_duplicate_letter(line);
         sum += letter_value(letter);
     }
     return sum;
@@ -27,7 +27,7 @@ mod test {
 
     #[test]
     fn test_sum_priority() {
-        assert_eq!(54, sum_priority("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL".to_string()))
+        assert_eq!(54, sum_priority("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"))
     }
 
     #[test]
@@ -41,11 +41,11 @@ mod test {
 
     #[test]
     fn test_duplicate_letter() {
-        assert_eq!('p', get_duplicate_letter("vJrwpWtwJgWrhcsFMMfFFhFp".to_string()));
-        assert_eq!('L', get_duplicate_letter("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL".to_string()));
-        assert_eq!('P', get_duplicate_letter("PmmdzqPrVvPwwTWBwg".to_string()));
-        assert_eq!('v', get_duplicate_letter("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn".to_string()));
-        assert_eq!('t', get_duplicate_letter("ttgJtRGJQctTZtZT".to_string()));
-        assert_eq!('s', get_duplicate_letter("CrZsJsPPZsGzwwsLwLmpwMDw".to_string()));
+        assert_eq!('p', get_duplicate_letter("vJrwpWtwJgWrhcsFMMfFFhFp"));
+        assert_eq!('L', get_duplicate_letter("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"));
+        assert_eq!('P', get_duplicate_letter("PmmdzqPrVvPwwTWBwg"));
+        assert_eq!('v', get_duplicate_letter("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"));
+        assert_eq!('t', get_duplicate_letter("ttgJtRGJQctTZtZT"));
+        assert_eq!('s', get_duplicate_letter("CrZsJsPPZsGzwwsLwLmpwMDw"));
     }
 }
