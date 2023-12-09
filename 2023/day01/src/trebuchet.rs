@@ -1,12 +1,15 @@
 use crate::bookend_tokenizer::tokenize;
 use crate::number_dictionary::{generate_dictionary, NumberDictionary};
+use rayon::prelude::*;
 
 pub fn calibrate_input(input:&str, convert_strings: bool) -> u32 {
     let dictionary = generate_dictionary(convert_strings);
-    let lines = input.split("\n");
-
-    return lines.map(|line| calibrate_line(line.to_string(), &dictionary))
-        .sum();
+    
+    input.split("\n")
+        .collect::<Vec<_>>()
+        .par_iter()
+        .map(|line| calibrate_line(line.to_string(), &dictionary))
+        .sum()
 }
 
 fn calibrate_line(calibration_line:String, dictionary: &NumberDictionary) -> u32 {

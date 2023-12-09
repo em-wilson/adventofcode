@@ -15,13 +15,16 @@ pub fn tokenize(input: String, token_dictionary: &NumberDictionary) -> Vec<Strin
             if last_number.is_none() {
                 last_number = peekable_string.peek_number(key.to_string(), value.to_string(), input.len()-i-1)
             }
+
+            if first_number.is_some() && last_number.is_some() {
+                return [
+                    first_number.unwrap().to_string(),
+                    last_number.unwrap().to_string()
+                ].to_vec();
+            }
         }
     }
-
-    return [
-        first_number.unwrap().to_string(),
-        last_number.unwrap().to_string()
-    ].to_vec();
+    panic!("should not have ended up here!");
 }
 
 #[cfg(test)]
