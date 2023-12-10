@@ -10,6 +10,7 @@ fn main() {
     day05::create_challenge().run("day05/input.txt");
     day06::create_challenge().run("day06/input.txt");
     day07::create_challenge().run("day07/input.txt");
+    day08::create_challenge().run("day08/input.txt");
     day25::create_challenge().run("day25/input.txt");
 
     println!("{} {}",
