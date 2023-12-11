@@ -13,6 +13,7 @@ fn main() {
     day08::create_challenge().run("day08/input.txt");
     day09::create_challenge().run("day09/input.txt");
     day10::create_challenge().run("day10/input.txt");
+    day11::create_challenge().run("day11/input.txt");
 
     println!("{} {}",
         "Total time:".bright_white(),
