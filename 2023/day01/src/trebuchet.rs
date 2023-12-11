@@ -26,7 +26,7 @@ mod tests {
     use super::{calibrate_input};
 
     fn perform_test(input: &'static str, test_against_full_words: bool, expected_result: u32) {
-        let result = calibrate_input(input.to_string(), test_against_full_words);
+        let result = calibrate_input(input, test_against_full_words);
         assert_eq!(expected_result, result);
     }
 
