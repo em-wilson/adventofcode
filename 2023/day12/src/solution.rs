@@ -1,6 +1,11 @@
 use rayon::prelude::*;
 use std::collections::HashMap;
 
+// Anything smaller than 5 isn't worth looking up in the memo
+const MIN_YIELD:usize = 5;
+
+type CalculationMemo = HashMap<(Vec<usize>, Vec<char>), usize>;
+
 pub fn calculate_combinations(input:&str, folds:usize) -> usize {
     let lines:Vec<(Vec<char>, Vec<usize>)> = input.split("\n")
         .map(|line|unfold_line(line, folds))
@@ -14,13 +19,16 @@ pub fn calculate_combinations(input:&str, folds:usize) -> usize {
 
     lines.par_iter()
         .map(|(data, groups)|{
-            let mut memoization: HashMap<(Vec<usize>, Vec<char>), usize> = HashMap::new();
-            calculate_solutions(data, groups, &mut memoization)
+            let mut memo:Option<Box<CalculationMemo>> = None;
+            if data.len() > MIN_YIELD {
+                memo = Some(Box::new(HashMap::new()));
+            }
+            calculate_solutions(data, groups, &mut memo)
         })
         .sum()
 }
 
-fn calculate_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &mut HashMap<(Vec<usize>, Vec<char>), usize>) -> usize {
+fn calculate_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &mut Option<Box<CalculationMemo>>) -> usize {
     if data.is_empty() {
         if groups.is_empty() {
             return 1;
@@ -37,12 +45,10 @@ fn calculate_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &mut Ha
     }
 }
 
-fn calculate_hash_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &mut HashMap<(Vec<usize>, Vec<char>), usize>) -> usize {
-    // Anything smaller than 2 isn't worth looking up in the memo
-    const MIN_YIELD:usize = 2;
-    if data.len() > MIN_YIELD {
-        if let Some(&result) = memoization.get(&(groups.clone(), data.clone())) {
-            return result;
+fn calculate_hash_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &mut Option<Box<CalculationMemo>>) -> usize {
+    if let Some(memo) = memoization {
+        if let Some(result) = memo.get(&(groups.clone(), data.clone())) {
+            return *result;
         }
     }
 
@@ -69,8 +75,8 @@ fn calculate_hash_solutions(data:&Vec<char>, groups:&Vec<usize>, memoization: &m
         return 0;
     }
     let result = calculate_solutions(&data[(x + 1)..].to_vec(), &groups[1..].to_vec(), memoization);
-    if data.len() > MIN_YIELD {
-        memoization.insert((groups.clone(), data.clone()), result);
+    if let Some(ref mut memo) = memoization {
+        memo.insert((groups.clone(), data.clone()), result);
     }
     result
 }
