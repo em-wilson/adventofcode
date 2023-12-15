@@ -1,6 +1,24 @@
+#[derive(Clone, Copy, PartialEq)]
+enum Tile {
+    Empty,
+    CubedRock,
+    RoundRock
+}
+
+impl Tile {
+    fn from(input:char) -> Tile {
+        match input {
+            '.' => Tile::Empty,
+            'O' => Tile::RoundRock,
+            '#' => Tile::CubedRock,
+             _  => panic!("Unknown rock {}", input)
+        }
+    }
+}
+
 pub fn calculate_load(input:&str, cycles:usize) -> usize {
-    let mut map:Vec<Vec<char>> = input.split("\n")
-        .map(|l|l.chars().collect())
+    let mut map:Vec<Vec<Tile>> = input.split("\n")
+        .map(|l|l.chars().map(|c|Tile::from(c)).collect())
         .collect();
 
     if cycles == 0 {
@@ -23,9 +41,9 @@ pub fn calculate_load(input:&str, cycles:usize) -> usize {
     }
 }
 
-fn rotate_map(map:&Vec<Vec<char>>) -> Vec<Vec<char>> {
+fn rotate_map(map:&Vec<Vec<Tile>>) -> Vec<Vec<Tile>> {
     let size = map.len();
-    let mut rotated = vec![vec!['.'; size]; size];
+    let mut rotated = vec![vec![Tile::Empty; size]; size];
     for row in 0..size {
         for col in 0..size {
             rotated[col][size - 1 - row] = map[row][col];
@@ -34,12 +52,12 @@ fn rotate_map(map:&Vec<Vec<char>>) -> Vec<Vec<char>> {
     rotated
 }
 
-fn calculate_weight(map:&Vec<Vec<char>>) -> usize {
+fn calculate_weight(map:&Vec<Vec<Tile>>) -> usize {
     let mut weight = 0;
     let nlen = map.len();
     for y in 0..nlen {
         for x in 0..map[y].len() {
-            if map[y][x] == 'O' {
+            if map[y][x] == Tile::RoundRock {
                 weight += nlen - y;
             }
         }
@@ -47,20 +65,20 @@ fn calculate_weight(map:&Vec<Vec<char>>) -> usize {
     weight
 }
 
-fn tilt_platform_north(map:&mut Vec<Vec<char>>) {
+fn tilt_platform_north(map:&mut Vec<Vec<Tile>>) {
     let nlen = map.len();
     for x in 0..map[0].len() {
         let mut landing = 0;
         let mut group_len = 0;
         let mut y = 0;
         while y < nlen {
-            if map[y][x] == 'O' {
+            if map[y][x] == Tile::RoundRock {
                 group_len += 1;
             }
             
-            if map[y][x] == '#' || y == nlen - 1 {
+            if map[y][x] == Tile::CubedRock || y == nlen - 1 {
                 let y_end = match map[y][x] {
-                    '#' => std::cmp::max(0, y as isize - 1) as usize,
+                    Tile::CubedRock => std::cmp::max(0, y as isize - 1) as usize,
                     _   => y
                 };
                 if y_end == landing {
@@ -71,9 +89,9 @@ fn tilt_platform_north(map:&mut Vec<Vec<char>>) {
                 }
                 for y_write in landing..=y_end {
                     if y_write - landing < group_len {
-                        map[y_write][x] = 'O';
+                        map[y_write][x] = Tile::RoundRock;
                     } else {
-                        map[y_write][x] = '.';
+                        map[y_write][x] = Tile::Empty;
                     }
                 }
                 group_len = 0;
