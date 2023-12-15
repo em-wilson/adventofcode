@@ -1,12 +1,16 @@
+type PoweredLens = (String, usize);
+type PoweredLensBox = Vec<PoweredLens>;
+type PoweredLensBoxes = Vec<PoweredLensBox>;
+
 pub fn sequence_results(input:&str) -> usize {
     input.split(",")
-        .map(|s|sequence_string(s))
+        .map(sequence_string)
         .sum()
 }
 
 pub fn sequence_boxes(input:&str) -> usize {
     let commands:Vec<&str> = input.split(",").collect();
-    let mut boxes = vec![Vec::<(String, u32)>::new(); 256];
+    let mut boxes:PoweredLensBoxes = vec![Vec::new(); 256];
     for command in commands {
         let mut cmd = String::from("");
         let mut action = ' ';
@@ -14,7 +18,7 @@ pub fn sequence_boxes(input:&str) -> usize {
         for c in command.chars() {
             match c {
                 '-' | '=' => action = c,
-                '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => power = c.to_digit(10).unwrap(),
+                '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => power = c.to_digit(10).unwrap() as usize,
                 _ => cmd += &c.to_string()
             };
         }
@@ -26,33 +30,26 @@ pub fn sequence_boxes(input:&str) -> usize {
         }
     }
 
-    let mut result:usize = 0;
-    for box_num in 0..boxes.len() {
-        if boxes[box_num].len() > 0 {
-            result += boxes[box_num].clone().into_iter().enumerate()
-                .map(|(i, (_, power))|(box_num + 1) * (i + 1) * power as usize)
-                .sum::<usize>();
-        }
-    }
-    result
+    boxes.iter().enumerate()
+        .map(|(box_num, boxx)|boxx.clone().into_iter().enumerate()
+                .map(|(i, (_, power))|(box_num + 1) * (i + 1) * power)
+                .sum::<usize>())
+        .sum()
 }
 
-fn insert_lens(hash:&str, power:u32, boxes:&mut Vec<Vec<(String, u32)>>) {
+fn insert_lens(hash:&str, power:usize, boxes:&mut PoweredLensBoxes) {
     let box_num = sequence_string(hash);
-    let mut found = false;
     for (i, (idx, _)) in boxes[box_num].clone().into_iter().enumerate() {
         if idx == hash {
             boxes[box_num][i] = (hash.to_string(), power);
-            found = true;
+            return;
         }
     }
 
-    if !found {
-        boxes[box_num].push((hash.to_string(), power));
-    }
+    boxes[box_num].push((hash.to_string(), power));
 }
 
-fn remove_lens(hash:&str, boxes:&mut Vec<Vec<(String, u32)>>) {
+fn remove_lens(hash:&str, boxes:&mut PoweredLensBoxes) {
     let box_num = sequence_string(hash);
     for (i, (idx, _)) in boxes[box_num].clone().into_iter().enumerate() {
         if idx == hash {
