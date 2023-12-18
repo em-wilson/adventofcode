@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 pub enum LineParser {
     Straight,
     Hex
@@ -7,98 +5,43 @@ pub enum LineParser {
 
 impl LineParser {
     fn parse(&self, line:&str) -> (String, usize) {
+        let parts:Vec<_> = line.split(" ").collect();
         match self {
             LineParser::Straight => {
-                let parts:Vec<_> = line.split(" ").collect();
                 let direction = parts[0];
                 let steps = parts[1].parse::<usize>().unwrap();
                 (direction.to_string(), steps)        
             },
-            LineParser::Hex => convert_dig_code(line)
+            LineParser::Hex => convert_dig_code(parts[2])
         }
     }
 }
 
 pub fn count_dugout_size(input:&str, line_parser:LineParser) -> usize {
-    let mut dug_positions = HashSet::new();
     let mut pos:(isize, isize) = (0,0);
-    dug_positions.insert(pos);
+    let mut lace_positions = Vec::new();
+    lace_positions.push(pos);
+    let mut perimeter = 2;
     for line in input.split("\n") {
         let (direction, steps) = line_parser.parse(&line);
-        for _ in 1..=steps {
-            let (x,y) = pos;
-            pos = match direction.as_str() {
-                "R" => (x + 1, y),
-                "L" => (x - 1, y),
-                "U" => (x, y - 1),
-                "D" => (x, y + 1),
-                _   => panic!("unknown direction {}", direction)
-            };
-            dug_positions.insert(pos);
-        }
-    }
-    let corrected_dug_positions = tidy_dug_positions(&dug_positions);
-    let (max_x, max_y) = get_bounds(&corrected_dug_positions);
-    let grid_area = (max_x + 1) * (max_y + 1);
-    grid_area - count_open_spaces(&corrected_dug_positions)
-}
-
-// Snap to grid with origin 0,0 ; removes negative numbers
-fn tidy_dug_positions(positions:&HashSet<(isize, isize)>) -> HashSet<(usize, usize)> {
-    let (mut x_delta, mut y_delta) = positions.iter()
-        .fold((0,0), |(x_old, y_old),(x,y)|(std::cmp::min(x_old, *x),std::cmp::min(y_old,*y)));
-
-    if x_delta < 0 {
-        x_delta = x_delta.abs();
-    } else {
-        x_delta = 0;
+        let (x,y) = pos;
+        pos = match direction.as_str() {
+            "R" => (x + steps as isize, y),
+            "L" => (x - steps as isize, y),
+            "U" => (x, y - steps as isize),
+            "D" => (x, y + steps as isize),
+            _   => panic!("unknown direction {}", direction)
+        };
+        perimeter += steps;
+        lace_positions.push(pos);
     }
 
-    if y_delta < 0 {
-        y_delta = y_delta.abs();
-    } else {
-        y_delta = 0;
-    }
-
-    positions.iter()
-        .map(|(x,y)|((x + x_delta) as usize, (y + y_delta) as usize))
-        .collect()
-}
-
-fn get_bounds(positions:&HashSet<(usize, usize)>) -> (usize, usize) {
-    positions.iter()
-        .fold((0,0), |(x_old, y_old),(x,y)|(std::cmp::max(x_old, *x),std::cmp::max(y_old,*y)))
-}
-
-fn count_open_spaces(dug_positions:&HashSet<(usize, usize)>) -> usize {
-    let (max_x, max_y) = get_bounds(dug_positions);
-
-    let mut map = vec![vec!['.'; max_x + 1]; max_y + 1];
-    let mut frontier = Vec::new();
-    let mut open_spaces = HashSet::new();
-    for y in 0..=max_y {
-        for x in 0..=max_x {
-            if dug_positions.contains(&(x,y)) {
-                map[y][x] = '#';
-            } else if x == 0 || x == max_x || y == 0 || y == max_y {
-                frontier.push((x,y));
-            }
-        }
-    }
-
-    while let Some(coord) = frontier.pop() {
-        let (x,y) = coord;
-        if map[y][x] == '#' {
-            continue;
-        }
-        if open_spaces.insert(coord) {
-            if x > 0 { frontier.push((x - 1, y)); }
-            if y > 0 { frontier.push((x, y - 1)); }
-            if x < max_x { frontier.push((x + 1, y)); }
-            if y < max_y { frontier.push((x, y + 1)); }
-        }
-    }
-    open_spaces.len()
+    let area:isize = lace_positions.windows(2).map(|window|{
+        let (x1,y1) = window[0];
+        let (x2,y2) = window[1];
+        (x1 as isize * y2 as isize) - (y1 as isize * x2 as isize)
+    }).sum();
+    ((area + perimeter as isize) / 2) as usize
 }
 
 fn convert_dig_code(code:&str) -> (String, usize) {
@@ -129,7 +72,7 @@ mod tests {
     }
 
     #[test]
-    fn test_count_dugout_size() {
+    fn test_count_massive_dugout_size() {
         let input = fs::read_to_string("test_input.txt")
             .expect("Could not read file test_input.txt");
 
