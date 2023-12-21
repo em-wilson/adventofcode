@@ -23,6 +23,7 @@ fn main() {
     day18::create_challenge().run("day18/input.txt");
     day19::create_challenge().run("day19/input.txt");
     day20::create_challenge().run("day20/input.txt");
+    day21::create_challenge().run("day21/input.txt");
 
     println!("{} {}",
         "Total time:".bright_white(),
