@@ -28,6 +28,7 @@ dependencies = [
  "day19",
  "day20",
  "day21",
+ "day22",
 ]
 
 [[package]]
@@ -245,6 +246,13 @@ dependencies = [
 
 [[package]]
 name = "day21"
+version = "0.1.0"
+dependencies = [
+ "advent_shared",
+]
+
+[[package]]
+name = "day22"
 version = "0.1.0"
 dependencies = [
  "advent_shared",

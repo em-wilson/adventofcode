@@ -45,7 +45,7 @@ pub fn count_infinite_garden_plots(input:&str, step_count:usize) -> usize {
     // println!("Step remainder: {} % {} = {}", step_count, map_area, step_remainder);
 
     let mut remainder = 0;
-    for step_num in 0..step_count {
+    for _step_num in 0..step_count {
         if remainder == map_area {
             remainder = 0;
         }
