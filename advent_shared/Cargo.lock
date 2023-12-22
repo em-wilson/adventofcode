@@ -3,25 +3,6 @@
 version = 3
 
 [[package]]
-name = "advent"
-version = "0.1.0"
-dependencies = [
- "colored",
- "day01",
- "day02",
- "day03",
- "day04",
- "day05",
- "day06",
- "day07",
- "day08",
- "day09",
- "day10",
- "day11",
- "day25",
-]
-
-[[package]]
 name = "advent_shared"
 version = "0.1.0"
 dependencies = [
@@ -36,90 +17,6 @@ checksum = "cbf2150cce219b664a8a70df7a1f933836724b503f8a413af9365b4dcc4d90b8"
 dependencies = [
  "lazy_static",
  "windows-sys",
-]
-
-[[package]]
-name = "day01"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day02"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day03"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day04"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day05"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day06"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day07"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day08"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day09"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day10"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day11"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
-]
-
-[[package]]
-name = "day25"
-version = "0.1.0"
-dependencies = [
- "advent_shared",
 ]
 
 [[package]]

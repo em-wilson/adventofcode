@@ -10,10 +10,10 @@ pub fn create_challenge() -> AdventChallenge {
     }
 }
 
-pub fn run_a(_input:&str) -> String {
-    String::from("---")
+pub fn run_a(input:&str) -> String {
+    solution::count_monkey_business(&input, 20, true).to_string()
 }
 
-pub fn run_b(_input:&str) -> String {
-    String::from("---")
+pub fn run_b(input:&str) -> String {
+    solution::count_monkey_business(&input, 10000, false).to_string()
 }
