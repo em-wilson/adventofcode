@@ -24,26 +24,21 @@ fn stones_intersect(a:&HailStone, b:&HailStone, min:f64, max:f64) -> bool {
     let ((b_x1, b_y1, _), (b_vx, b_vy, _)) = b;
     let (b_x2, b_y2) = (b_x1+b_vx, b_y1+b_vy);
 
-    let a_x12 = a_x1 - a_x2;
-    let b_x12 = b_x1 - b_x2;
-    let a_y12 = a_y1 - a_y2;
-    let b_y12 = b_y1 - b_y2;
+    let a_slope = (a_y2 - a_y1) / (a_x2 - a_x1);
+    let b_slope = (b_y2 - b_y1) / (b_x2 - b_x1);
 
-    let c = a_x12 * b_y12 - a_y12 * b_x12;
+    let a_y_intersection = a_y1 - (a_slope * a_x1);
+    let b_y_intersection = b_y1 - (b_slope * b_x1);
 
-    if c.abs() > 0_f64 {
-        let a = a_x1 * a_y2 - a_y1 * a_y2;
-        let b = b_x1 * b_y2 - b_y1 * b_x2;
-
-        let x = (a * b_x12 - b * a_x12) / c;
-        let y = (a * b_y12 - b * a_y12) / c;
-
-        if x >= min && x <= max && y >= min && y <= max {
-            return true;
-        }
-    }
+    let (x_intersect, y_intersect) = find_intersection((a_slope, a_y_intersection), (b_slope, b_y_intersection));
 
     false
+}
+
+fn find_intersection((a:f64, b:f64),(c:f64,d:f64)) -> (f64, f64) {
+    let x_intersect = (d - c)/(a - b);
+    let y_intersect = (a * ((d - c)/(a-b))) + c;
+    (x_intersect, y_intersect);
 }
 
 fn parse_hailstone(input:&str) -> HailStone {
