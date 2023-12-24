@@ -10,8 +10,9 @@ pub fn create_challenge() -> AdventChallenge {
     }
 }
 
-pub fn run_a(_input:&str) -> String {
-    String::from("---")
+pub fn run_a(input:&str) -> String {
+    // 302 is too low
+    solution::count_intersections(&input, 200000000000000_f64, 400000000000000_f64).to_string()
 }
 
 pub fn run_b(_input:&str) -> String {
