@@ -11,9 +11,9 @@ pub fn create_challenge() -> AdventChallenge {
 }
 
 pub fn run_a(input:&str) -> String {
-    solution::longest_path(&input, false).to_string()
+    solution::longest_path(&input, true).to_string()
 }
 
 pub fn run_b(input:&str) -> String {
-    solution::longest_path(&input, true).to_string()
+    solution::longest_path(&input, false).to_string()
 }
