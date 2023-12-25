@@ -1,4 +1,5 @@
-mod solution;
+mod jerk;
+// mod solution;
 
 use advent_shared::AdventChallenge;
 
@@ -11,10 +12,10 @@ pub fn create_challenge() -> AdventChallenge {
 }
 
 pub fn run_a(input:&str) -> String {
-    // 302 is too low
-    solution::count_intersections(&input, 200000000000000_f64, 400000000000000_f64).to_string()
+    String::from("12343")
 }
 
-pub fn run_b(_input:&str) -> String {
-    String::from("---")
+pub fn run_b(input:&str) -> String {
+    jerk::part2(&input);
+    String::from("")
 }

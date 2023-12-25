@@ -7,3 +7,12 @@ edition = "2021"
 
 [dependencies]
 advent_shared = { path = "../../advent_shared" }
+geo = "0.27.0"
+geo-types = "0.7.12"
+intersect2d = "0.4.2"
+itertools = "0.12.0"
+line_intersection = "0.4.0"
+linked-hash-map = "0.5.6"
+num-traits = "0.2.17"
+priority-queue = "1.3.2"
+rustc-hash = "1.1.0"
